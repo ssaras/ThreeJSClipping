@@ -79,7 +79,8 @@
             this.throttledRender = throttledRender;
 
             // This handles the actual selection and dragging of the capping cube
-            CAPS.picking(this); // must come before OrbitControls, so it can cancel them
+            // must come before OrbitControls, so it can cancel them
+            CAPS.picking(this);
             
             // Create the controls and use throttlesRender when the contols update
             this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
@@ -111,11 +112,6 @@
 
             // Apply materials
             var setMaterial = function (node, material) {
-                //material.uniforms.color.value = {
-                //    r:1,
-                //    g:1,
-                //    b:1
-                //}
                 node.material = material;
                 if (node.children) {
                     for (var i = 0; i < node.children.length; i++) {
@@ -148,15 +144,20 @@
             collada.updateMatrix();
             this.scene.add(collada);
                         
-            console.log(this.scene);
-            console.log(this.capsScene);
-            console.log(this.backStencil);
-            console.log(this.frontStencil);
+            console.log("scene: ", this.scene);
+            console.log("capsScene: ", this.capsScene);
+            console.log("backStencil: ", this.backStencil);
+            console.log("frontStencil: ", this.frontStencil);
+            console.log("renderer: ", this.renderer);
 
             this.throttledRender();
 
         },
 
+        // The render function will be an issue
+        // It used depracated methods that don't exist in the newer ThreeJS version
+        // Luckily, these methods are methods that just call other methods that already exist
+        // TODO: Figure out how to call the method that does exist
         _render: function () {
 
             this.renderer.clear();
