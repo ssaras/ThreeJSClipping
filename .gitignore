@@ -1,0 +1,5 @@
+packages/
+ThreeJS/obj/
+ThreeJS/bin/
+.vs/
+.localhistory/
