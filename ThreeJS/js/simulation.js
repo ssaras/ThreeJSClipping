@@ -104,6 +104,8 @@
             };
             showCapsInput.addEventListener('change', onShowCaps, false);
 
+            console.log("selection: ", this.selection);
+
             // Start rendering
             throttledRender();
         },
@@ -143,7 +145,7 @@
             collada.scale.set(0.03, 0.03, 0.03);
             collada.updateMatrix();
             this.scene.add(collada);
-                        
+            
             console.log("scene: ", this.scene);
             console.log("capsScene: ", this.capsScene);
             console.log("backStencil: ", this.backStencil);
