@@ -35,11 +35,32 @@
             var self = this;
 
             // Load the model
-            var loader = new THREE.ColladaLoader();
-            loader.options.convertUpAxis = true;
-            loader.load('../models/house.dae', function (collada) {
-                self.initScene(collada.scene);
+            // var loader = new THREE.ColladaLoader();
+            // loader.options.convertUpAxis = true;
+            // loader.load('../models/house.dae', function (collada) {
+            //     self.initScene(collada.scene);
+            // });
+
+            // var loader = new THREE.OBJLoader();
+            // loader.load('../models/Clinic_A_20110906_optimized.obj', function (collada) {
+            //     self.initScene(collada);
+            // });
+
+            var mtlLoader = new THREE.MTLLoader();
+            mtlLoader.load("../models/Building 5-11.mtl", function (materials) {
+
+                var objLoader = new THREE.OBJLoader();
+                materials.preload();
+                objLoader.setMaterials(materials);
+
+                var loader = new THREE.OBJLoader();
+                loader.load('../models/Building 5-11.obj', function (collada) {
+                    self.initScene(collada);
+                });
+
             });
+
+            
 
             // Generate the div that will hold the renderer
             var container = document.createElement('div');
@@ -58,9 +79,13 @@
 
             // This generates the the capping cube
             this.selection = new CAPS.Selection(
-                new THREE.Vector3(-7, -14, -14),
-                new THREE.Vector3(14, 9, 3)
+                new THREE.Vector3(-50, -50, -50),
+                new THREE.Vector3(50, 50, 50)
             );
+            // this.selection = new CAPS.Selection(
+            //     new THREE.Vector3(-7, -14, -14),
+            //     new THREE.Vector3(14, 9, 3)
+            // );
             this.capsScene.add(this.selection.boxMesh);
             this.scene.add(this.selection.touchMeshes);
             this.scene.add(this.selection.displayMeshes);
@@ -129,20 +154,20 @@
             // This is the back sideclone (red)
             var back = collada.clone();
             setMaterial(back, CAPS.MATERIAL.backStencil);
-            back.scale.set(0.03, 0.03, 0.03);
+            // back.scale.set(0.03, 0.03, 0.03);
             back.updateMatrix();
             this.backStencil.add(back);
 
             // This is the front side clone (red)
             var front = collada.clone();
             setMaterial(front, CAPS.MATERIAL.frontStencil);
-            front.scale.set(0.03, 0.03, 0.03);
+            // front.scale.set(0.03, 0.03, 0.03);
             front.updateMatrix();
             this.frontStencil.add(front);
 
             // And this is the main mesh (blue) you see on parts that arent clipped
             setMaterial(collada, CAPS.MATERIAL.sheet);
-            collada.scale.set(0.03, 0.03, 0.03);
+            // collada.scale.set(0.03, 0.03, 0.03);
             collada.updateMatrix();
             this.scene.add(collada);
             
