@@ -46,21 +46,29 @@
             //     self.initScene(collada);
             // });
 
+            var clinicModel = {
+                mtl: "../models/Clinic_A_20110906_optimized.mtl",
+                obj: "../models/Clinic_A_20110906_optimized.obj"
+            };
+
+            var buildingModel = {
+                mtl: "../models/Building 5-11.mtl",
+                obj: "../models/Building 5-11.obj"
+            }
+
             var mtlLoader = new THREE.MTLLoader();
-            mtlLoader.load("../models/Building 5-11.mtl", function (materials) {
+            mtlLoader.load(clinicModel.mtl, function (materials) {
 
                 var objLoader = new THREE.OBJLoader();
                 materials.preload();
                 objLoader.setMaterials(materials);
 
                 var loader = new THREE.OBJLoader();
-                loader.load('../models/Building 5-11.obj', function (collada) {
+                loader.load(clinicModel.obj, function (collada) {
                     self.initScene(collada);
                 });
 
             });
-
-            
 
             // Generate the div that will hold the renderer
             var container = document.createElement('div');
@@ -77,21 +85,23 @@
             this.backStencil = new THREE.Scene();
             this.frontStencil = new THREE.Scene();
 
-            // This generates the the capping cube
-            this.selection = new CAPS.Selection(
-                new THREE.Vector3(-50, -50, -50),
-                new THREE.Vector3(50, 50, 50)
-            );
+            var gridHelper = new THREE.GridHelper(60, 60);
+            this.scene.add(gridHelper);
+
+            // // This generates the the capping cube
             // this.selection = new CAPS.Selection(
-            //     new THREE.Vector3(-7, -14, -14),
-            //     new THREE.Vector3(14, 9, 3)
+            //     new THREE.Vector3(-50, -50, -50),
+            //     new THREE.Vector3(50, 50, 50)
             // );
-            this.capsScene.add(this.selection.boxMesh);
-            this.scene.add(this.selection.touchMeshes);
-            this.scene.add(this.selection.displayMeshes);
+            // // this.selection = new CAPS.Selection(
+            // //     new THREE.Vector3(-7, -14, -14),
+            // //     new THREE.Vector3(14, 9, 3)
+            // // );
+            // this.capsScene.add(this.selection.boxMesh);
+            // this.scene.add(this.selection.touchMeshes);
+            // this.scene.add(this.selection.displayMeshes);
 
             // Create and configure renderer
-            // Rendering is similar to how we render do our rendering
             this.renderer = new THREE.WebGLRenderer({ antialias: true });
             this.renderer.setPixelRatio(window.devicePixelRatio);
             this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -99,7 +109,7 @@
             this.renderer.autoClear = false;
             container.appendChild(this.renderer.domElement);
 
-            // This (seemingly) deffers the rendering to achieve a certain frame rate while dragging the capping box.
+            // This (seemingly?) deffers the rendering to achieve a certain frame rate while dragging the capping box.
             var throttledRender = CAPS.SCHEDULE.deferringThrottle(this._render, this, 40);
             this.throttledRender = throttledRender;
 
@@ -136,6 +146,22 @@
         },
 
         initScene: function (collada) {
+
+            var box = new THREE.Box3;
+            box = box.setFromObject(collada);
+
+            // This generates the the capping cube
+            this.selection = new CAPS.Selection(
+               box.min,
+               box.max
+            );
+            // this.selection = new CAPS.Selection(
+            //     new THREE.Vector3(-7, -14, -14),
+            //     new THREE.Vector3(14, 9, 3)
+            // );
+            this.capsScene.add(this.selection.boxMesh);
+            this.scene.add(this.selection.touchMeshes);
+            this.scene.add(this.selection.displayMeshes);
 
             // Apply materials
             var setMaterial = function (node, material) {
