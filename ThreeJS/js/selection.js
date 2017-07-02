@@ -90,6 +90,7 @@ CAPS.Selection.prototype = {
 
     },
 
+    // Set values for the shader
     setUniforms: function () {
 
         var uniforms = CAPS.UNIFORMS.clipping;
@@ -100,21 +101,22 @@ CAPS.Selection.prototype = {
 
     setValue: function (axis, value) {
 
+        // The user shouldn't be able to drag one side of the selection box
+        // behind the opposite side. Also sides should not coincide, so there's
+        // at least the specified buffer width between them.
         var buffer = 0.4;
-        var limit = 14;
-
         if (axis === 'x1') {
-            this.limitLow.x = Math.max(-limit, Math.min(this.limitHigh.x - buffer, value));
+            this.limitLow.x = Math.min(this.limitHigh.x - buffer, value);
         } else if (axis === 'x2') {
-            this.limitHigh.x = Math.max(this.limitLow.x + buffer, Math.min(limit, value));
+            this.limitHigh.x = Math.max(this.limitLow.x + buffer, value);
         } else if (axis === 'y1') {
-            this.limitLow.y = Math.max(-limit, Math.min(this.limitHigh.y - buffer, value));
+            this.limitLow.y = Math.min(this.limitHigh.y - buffer, value);
         } else if (axis === 'y2') {
-            this.limitHigh.y = Math.max(this.limitLow.y + buffer, Math.min(limit, value));
+            this.limitHigh.y = Math.max(this.limitLow.y + buffer, value);
         } else if (axis === 'z1') {
-            this.limitLow.z = Math.max(-limit, Math.min(this.limitHigh.z - buffer, value));
+            this.limitLow.z = Math.min(this.limitHigh.z - buffer, value);
         } else if (axis === 'z2') {
-            this.limitHigh.z = Math.max(this.limitLow.z + buffer, Math.min(limit, value));
+            this.limitHigh.z = Math.max(this.limitLow.z + buffer, value);
         }
 
         this.setBox();
