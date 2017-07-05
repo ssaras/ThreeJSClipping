@@ -68,5 +68,8 @@
         fragmentShader: CAPS.SHADER.invisibleFragmentShader
     })
 
+    // use this material to show the invisible dragging plane for debugging:
+    // Invisible: new THREE.MeshBasicMaterial({ color: 0x000000, linewidth: 1, wireframe: true })
+
 };
 

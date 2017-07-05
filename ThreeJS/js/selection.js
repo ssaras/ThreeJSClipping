@@ -1,7 +1,14 @@
-﻿CAPS.Selection = function (low, high) {
+﻿// parameters: extreme points of object bounds
+CAPS.Selection = function (low, high) {
 
+    // the two corners of the selection cube with their current value
     this.limitLow = low;
     this.limitHigh = high;
+
+    // the maximum extension of the selection
+    // extends 10% above the models bounds
+    this.limitLowMax = low.clone().multiplyScalar(1.1);
+    this.limitHighMax = high.clone().multiplyScalar(1.1);
 
     this.box = new THREE.BoxGeometry(1, 1, 1);
     this.boxMesh = new THREE.Mesh(this.box, CAPS.MATERIAL.cap);
@@ -106,17 +113,17 @@ CAPS.Selection.prototype = {
         // at least the specified buffer width between them.
         var buffer = 0.4;
         if (axis === 'x1') {
-            this.limitLow.x = Math.min(this.limitHigh.x - buffer, value);
+            this.limitLow.x = Math.max( this.limitLowMax.x, Math.min(this.limitHigh.x - buffer, value));
         } else if (axis === 'x2') {
-            this.limitHigh.x = Math.max(this.limitLow.x + buffer, value);
+            this.limitHigh.x = Math.max(this.limitLow.x + buffer, Math.min(this.limitHighMax.x, value));
         } else if (axis === 'y1') {
-            this.limitLow.y = Math.min(this.limitHigh.y - buffer, value);
+            this.limitLow.y = Math.max(this.limitLowMax.y, Math.min(this.limitHigh.y - buffer, value));
         } else if (axis === 'y2') {
-            this.limitHigh.y = Math.max(this.limitLow.y + buffer, value);
+            this.limitHigh.y = Math.max(this.limitLow.y + buffer, Math.min(this.limitHighMax.y, value));
         } else if (axis === 'z1') {
-            this.limitLow.z = Math.min(this.limitHigh.z - buffer, value);
+            this.limitLow.z = Math.max(this.limitLowMax.z, Math.min(this.limitHigh.z - buffer, value));
         } else if (axis === 'z2') {
-            this.limitHigh.z = Math.max(this.limitLow.z + buffer, value);
+            this.limitHigh.z = Math.max(this.limitLow.z + buffer, Math.min(this.limitHighMax.z, value));
         }
 
         this.setBox();
