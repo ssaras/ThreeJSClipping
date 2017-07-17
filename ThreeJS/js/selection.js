@@ -1,14 +1,19 @@
 ﻿// parameters: extreme points of object bounds
 CAPS.Selection = function (low, high) {
 
-    // the two corners of the selection cube with their current value
-    this.limitLow = low;
-    this.limitHigh = high;
+    var diffHalf = high.clone().sub( low ).multiplyScalar( 0.5 );
+    var midPoint = low.clone().add( diffHalf );
+
+    // extend 10% above the models bounds
+    diffHalf.multiplyScalar(1.1);
 
     // the maximum extension of the selection
-    // extends 10% above the models bounds
-    this.limitLowMax = low.clone().multiplyScalar(1.1);
-    this.limitHighMax = high.clone().multiplyScalar(1.1);
+    this.limitLowMax = midPoint.clone().sub( diffHalf )
+    this.limitHighMax = midPoint.clone().add( diffHalf );
+
+    // the two corners of the selection cube with their current value
+    this.limitLow = this.limitLowMax;
+    this.limitHigh = this.limitHighMax;
 
     this.box = new THREE.BoxGeometry(1, 1, 1);
     this.boxMesh = new THREE.Mesh(this.box, CAPS.MATERIAL.cap);
