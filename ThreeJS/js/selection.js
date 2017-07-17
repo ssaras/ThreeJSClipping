@@ -116,7 +116,7 @@ CAPS.Selection.prototype = {
         // The user shouldn't be able to drag one side of the selection box
         // behind the opposite side. Also sides should not coincide, so there's
         // at least the specified buffer width between them.
-        var buffer = 0.4;
+        var buffer = 0.01;
         if (axis === 'x1') {
             this.limitLow.x = Math.max( this.limitLowMax.x, Math.min(this.limitHigh.x - buffer, value));
         } else if (axis === 'x2') {
