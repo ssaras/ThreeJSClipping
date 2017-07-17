@@ -95,6 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="index.html" />
+    <Content Include="models\OneWallTwoWindows.xml" />
     <Content Include="packages.config" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -102,6 +103,20 @@
     <Content Include="models\house.dae" />
     <Content Include="models\ET.dae" />
     <Content Include="models\test.dae" />
+    <Content Include="models\block.stl" />
+    <Content Include="models\Building 5-11.dae" />
+    <Content Include="models\Building 5-11.ifc" />
+    <Content Include="models\Building 5-11.mtl" />
+    <Content Include="models\Building 5-11.obj" />
+    <Content Include="models\Clinic_A_20110906_optimized.dae" />
+    <Content Include="models\Clinic_A_20110906_optimized.ifc" />
+    <Content Include="models\Clinic_A_20110906_optimized.mtl" />
+    <Content Include="models\Clinic_A_20110906_optimized.obj" />
+    <Content Include="models\ExtrusionAluminum.stl" />
+    <Content Include="models\OneWallTwoWindows.dae" />
+    <Content Include="models\OneWallTwoWindows.ifc" />
+    <Content Include="models\OneWallTwoWindows.mtl" />
+    <Content Include="models\OneWallTwoWindows.obj" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -34,41 +34,41 @@
 
             var self = this;
 
-            // Load the model
-            // var loader = new THREE.ColladaLoader();
-            // loader.options.convertUpAxis = true;
-            // loader.load('../models/house.dae', function (collada) {
-            //     self.initScene(collada.scene);
-            // });
+             //Load the model
+             //var loader = new THREE.ColladaLoader();
+             //loader.options.convertUpAxis = true;
+             //loader.load('../models/house.dae', function (collada) {
+             //    self.initScene(collada.scene);
+             //});
 
-            // var loader = new THREE.OBJLoader();
-            // loader.load('../models/Clinic_A_20110906_optimized.obj', function (collada) {
-            //     self.initScene(collada);
-            // });
+             var loader = new THREE.OBJLoader();
+             loader.load('../models/Clinic_A_20110906_optimized.obj', function (collada) {
+                 self.initScene(collada);
+             });
 
-            var clinicModel = {
-                mtl: "../models/Clinic_A_20110906_optimized.mtl",
-                obj: "../models/Clinic_A_20110906_optimized.obj"
-            };
+            //var clinicModel = {
+            //    mtl: "../models/Clinic_A_20110906_optimized.mtl",
+            //    obj: "../models/Clinic_A_20110906_optimized.obj"
+            //};
 
-            var buildingModel = {
-                mtl: "../models/Building 5-11.mtl",
-                obj: "../models/Building 5-11.obj"
-            }
+            //var buildingModel = {
+            //    mtl: "../models/Building 5-11.mtl",
+            //    obj: "../models/Building 5-11.obj"
+            //}
 
-            var mtlLoader = new THREE.MTLLoader();
-            mtlLoader.load(clinicModel.mtl, function (materials) {
+            //var mtlLoader = new THREE.MTLLoader();
+            //mtlLoader.load(clinicModel.mtl, function (materials) {
 
-                var objLoader = new THREE.OBJLoader();
-                materials.preload();
-                objLoader.setMaterials(materials);
+            //    var objLoader = new THREE.OBJLoader();
+            //    materials.preload();
+            //    objLoader.setMaterials(materials);
 
-                var loader = new THREE.OBJLoader();
-                loader.load(clinicModel.obj, function (collada) {
-                    self.initScene(collada);
-                });
+            //    var loader = new THREE.OBJLoader();
+            //    loader.load(clinicModel.obj, function (collada) {
+            //        self.initScene(collada);
+            //    });
 
-            });
+            //});
 
             // Generate the div that will hold the renderer
             var container = document.createElement('div');
