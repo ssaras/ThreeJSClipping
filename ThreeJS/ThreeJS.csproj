@@ -95,6 +95,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="index.html" />
+    <Content Include="libs\ColladaLoader2.js" />
+    <Content Include="libs\DDSLoader.js" />
+    <Content Include="libs\FBXLoader2.js" />
+    <Content Include="libs\MTLLoader.js" />
+    <Content Include="libs\OBJLoader.js" />
+    <Content Include="libs\STLLoader.js" />
     <Content Include="models\OneWallTwoWindows.xml" />
     <Content Include="packages.config" />
     <Content Include="ApplicationInsights.config">
@@ -117,6 +123,10 @@
     <Content Include="models\OneWallTwoWindows.ifc" />
     <Content Include="models\OneWallTwoWindows.mtl" />
     <Content Include="models\OneWallTwoWindows.obj" />
+    <Content Include="models\Lakeside_Restaurant.ifc" />
+    <Content Include="models\Modell VCL 1.ifc" />
+    <Content Include="models\Node 2B.obj" />
+    <Content Include="models\SampleHouse.ifc" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

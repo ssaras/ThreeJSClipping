@@ -34,40 +34,43 @@
 
             var self = this;
 
-             //Load the model
-             //var loader = new THREE.ColladaLoader();
-             //loader.options.convertUpAxis = true;
-             //loader.load('../models/house.dae', function (collada) {
-             //    self.initScene(collada.scene);
-             //});
+            var clinicModel = {
+                mtl: "../models/Clinic_A_20110906_optimized.mtl",
+                obj: "../models/Clinic_A_20110906_optimized.obj"
+            };
 
-             var loader = new THREE.OBJLoader();
-             loader.load('../models/Clinic_A_20110906_optimized.obj', function (collada) {
-                 self.initScene(collada);
-             });
+            var buildingModel = {
+                mtl: "../models/Building 5-11.mtl",
+                obj: "../models/Building 5-11.obj"
+            }
 
-            //var clinicModel = {
-            //    mtl: "../models/Clinic_A_20110906_optimized.mtl",
-            //    obj: "../models/Clinic_A_20110906_optimized.obj"
-            //};
+            var houseModel = "../models/house.dae";
 
-            //var buildingModel = {
-            //    mtl: "../models/Building 5-11.mtl",
-            //    obj: "../models/Building 5-11.obj"
-            //}
+            var bldg511Model = "../models/Building 5-11.dae";
+
+            var nodeModel = "../models/Node 2B.obj";
+            
+            //Load the model
+            //var loader = new THREE.ColladaLoader();
+            //loader.options.convertUpAxis = true;
+            //loader.load(nodeModel, function (collada) {
+            //    self.initScene(collada.scene);
+            //});
+
+            var loader = new THREE.OBJLoader();
+            loader.load(nodeModel, function (collada) {
+                self.initScene(collada);
+            });
 
             //var mtlLoader = new THREE.MTLLoader();
-            //mtlLoader.load(clinicModel.mtl, function (materials) {
-
+            //mtlLoader.load("../models/Clinic_A_20110906_optimized.mtl", function (materials) {
             //    var objLoader = new THREE.OBJLoader();
             //    materials.preload();
             //    objLoader.setMaterials(materials);
-
             //    var loader = new THREE.OBJLoader();
-            //    loader.load(clinicModel.obj, function (collada) {
+            //    loader.load("../models/Clinic_A_20110906_optimized.obj", function (collada) {
             //        self.initScene(collada);
             //    });
-
             //});
 
             // Generate the div that will hold the renderer
