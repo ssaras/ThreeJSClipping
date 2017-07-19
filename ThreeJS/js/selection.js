@@ -12,8 +12,8 @@ CAPS.Selection = function (low, high) {
     this.limitHighMax = midPoint.clone().add( diffHalf );
 
     // the two corners of the selection cube with their current value
-    this.limitLow = this.limitLowMax;
-    this.limitHigh = this.limitHighMax;
+    this.limitLow = this.limitLowMax.clone();
+    this.limitHigh = this.limitHighMax.clone();
 
     this.box = new THREE.BoxGeometry(1, 1, 1);
     this.boxMesh = new THREE.Mesh(this.box, CAPS.MATERIAL.cap);
