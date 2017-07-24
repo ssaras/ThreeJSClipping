@@ -105,9 +105,7 @@ CAPS.Selection.prototype = {
     // Set values for the shader
     setUniforms: function () {
 
-        var uniforms = CAPS.UNIFORMS.clipping;
-        uniforms.clippingLow.value.copy(this.limitLow);
-        uniforms.clippingHigh.value.copy(this.limitHigh);
+        CAPS.UNIFORMS.clipping.update( this.limitLow, this.limitHigh );
 
     },
 

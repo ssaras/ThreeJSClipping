@@ -1,10 +1,12 @@
 ﻿CAPS.MATERIAL = {
 
-    sheet: new THREE.ShaderMaterial({
-        uniforms: CAPS.UNIFORMS.clipping,
-        vertexShader: CAPS.SHADER.vertexClipping,
-        fragmentShader: CAPS.SHADER.fragmentClipping
-    }),
+    sheet: function ( color ) {
+        return new THREE.ShaderMaterial({
+            uniforms: CAPS.UNIFORMS.clipping.get( color ),
+            vertexShader: CAPS.SHADER.vertexClipping,
+            fragmentShader: CAPS.SHADER.fragmentClipping
+        });
+    },
 
     cap: new THREE.ShaderMaterial({
         uniforms: CAPS.UNIFORMS.caps,
@@ -12,33 +14,8 @@
         fragmentShader: CAPS.SHADER.fragment
     }),
 
-    //backStencil: new THREE.ShaderMaterial({
-    //    uniforms: {
-    //        color: { type: "c", value: new THREE.Color(0x3d9ecb) },
-    //        clippingLow: { type: "v3", value: new THREE.Vector3(0, 0, 0) },
-    //        clippingHigh: { type: "v3", value: new THREE.Vector3(0, 0, 0) }
-    //    },
-    //    vertexShader: CAPS.SHADER.vertexClipping,
-    //    fragmentShader: CAPS.SHADER.fragmentClippingFront,
-    //    colorWrite: false,
-    //    depthWrite: false,
-    //    side: THREE.BackSide
-    //}),
-
-    //frontStencil: new THREE.ShaderMaterial({
-    //    uniforms: {
-    //        color: { type: "c", value: new THREE.Color(0x3d9ecb) },
-    //        clippingLow: { type: "v3", value: new THREE.Vector3(0, 0, 0) },
-    //        clippingHigh: { type: "v3", value: new THREE.Vector3(0, 0, 0) }
-    //    },
-    //    vertexShader: CAPS.SHADER.vertexClipping,
-    //    fragmentShader: CAPS.SHADER.fragmentClippingFront,
-    //    colorWrite: false,
-    //    depthWrite: false,
-    //}),
-
     backStencil: new THREE.ShaderMaterial({
-        uniforms: CAPS.UNIFORMS.clipping,
+        uniforms: CAPS.UNIFORMS.clipping.get( 0x000000 ),
         vertexShader: CAPS.SHADER.vertexClipping,
         fragmentShader: CAPS.SHADER.fragmentClippingFront,
         colorWrite: false,
@@ -47,7 +24,7 @@
     }),
 
     frontStencil: new THREE.ShaderMaterial({
-        uniforms: CAPS.UNIFORMS.clipping,
+        uniforms: CAPS.UNIFORMS.clipping.get( 0x000000 ),
         vertexShader: CAPS.SHADER.vertexClipping,
         fragmentShader: CAPS.SHADER.fragmentClippingFront,
         colorWrite: false,

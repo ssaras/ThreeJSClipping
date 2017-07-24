@@ -19,10 +19,7 @@
         this.renderer = undefined;
         this.controls = undefined;
 
-        // Check box to determine if it should be capped or clipped
-        this.showCaps = true;
-
-        this.init();
+        this.loadModel();
 
     };
 
@@ -30,7 +27,7 @@
 
         constructor: CAPS.Simulation,
 
-        init: function () {
+        loadModel: function () {
 
             var self = this;
 
@@ -44,23 +41,23 @@
                 obj: "../models/Building 5-11.obj"
             }
 
-            var houseModel = "../models/house.dae";
+            var houseModel = "./models/house.dae";
 
             var bldg511Model = "../models/Building 5-11.dae";
 
             var nodeModel = "../models/Node 2B.obj";
             
             //Load the model
-            //var loader = new THREE.ColladaLoader();
-            //loader.options.convertUpAxis = true;
-            //loader.load(nodeModel, function (collada) {
-            //    self.initScene(collada.scene);
-            //});
-
-            var loader = new THREE.OBJLoader();
-            loader.load(nodeModel, function (collada) {
-                self.initScene(collada);
+             var loader = new THREE.ColladaLoader();
+             loader.options.convertUpAxis = true;
+             loader.load(houseModel, function (collada) {
+                self.setupScene(collada.scene);
             });
+
+            // var loader = new THREE.OBJLoader();
+            // loader.load(clinicModel, function (collada) {
+            //     self.setupScene(collada);
+            // });
 
             //var mtlLoader = new THREE.MTLLoader();
             //mtlLoader.load("../models/Clinic_A_20110906_optimized.mtl", function (materials) {
@@ -69,9 +66,15 @@
             //    objLoader.setMaterials(materials);
             //    var loader = new THREE.OBJLoader();
             //    loader.load("../models/Clinic_A_20110906_optimized.obj", function (collada) {
-            //        self.initScene(collada);
+            //        self.setupScene(collada);
             //    });
             //});
+
+        },
+
+        setupScene: function (collada) {
+
+            var self = this;
 
             // Generate the div that will hold the renderer
             var container = document.createElement('div');
@@ -82,27 +85,11 @@
             this.camera.position.set(20, 20, 30);
             this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-            // Initialize all the scenes           
+            // Initialize all the scenes
             this.scene = new THREE.Scene();
             this.capsScene = new THREE.Scene();
             this.backStencil = new THREE.Scene();
             this.frontStencil = new THREE.Scene();
-
-            var gridHelper = new THREE.GridHelper(60, 60);
-            this.scene.add(gridHelper);
-
-            // // This generates the the capping cube
-            // this.selection = new CAPS.Selection(
-            //     new THREE.Vector3(-50, -50, -50),
-            //     new THREE.Vector3(50, 50, 50)
-            // );
-            // // this.selection = new CAPS.Selection(
-            // //     new THREE.Vector3(-7, -14, -14),
-            // //     new THREE.Vector3(14, 9, 3)
-            // // );
-            // this.capsScene.add(this.selection.boxMesh);
-            // this.scene.add(this.selection.touchMeshes);
-            // this.scene.add(this.selection.displayMeshes);
 
             // Create and configure renderer
             this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -116,10 +103,25 @@
             var throttledRender = CAPS.SCHEDULE.deferringThrottle(this._render, this, 40);
             this.throttledRender = throttledRender;
 
+            // get dimensions of loaded model
+            var box = new THREE.Box3;
+            box = box.setFromObject(collada);
+
+            // This handles the selected area, that is the limit of the clipping
+            this.selection = new CAPS.Selection(
+               box.min,
+               box.max
+            );
+
+            // a grid on the ground
+            var gridHelper = new THREE.GridHelper(60, 60);
+            gridHelper.position.y = box.min.y;
+            this.scene.add(gridHelper);
+
             // This handles the actual selection and dragging of the capping cube
             // must come before OrbitControls, so it can cancel them
             CAPS.picking(this);
-            
+
             // Create the controls and use throttlesRender when the contols update
             this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
             this.controls.addEventListener('change', throttledRender);
@@ -133,40 +135,14 @@
             };
             window.addEventListener('resize', onWindowResize, false);
 
-            // Set flags and events for showCaps input
-            var showCapsInput = document.getElementById('showCaps');
-            this.showCaps = showCapsInput.checked;
-            var onShowCaps = function () {
-                self.showCaps = showCapsInput.checked;
-                throttledRender();
-            };
-            showCapsInput.addEventListener('change', onShowCaps, false);
-
-            console.log("selection: ", this.selection);
-
-            // Start rendering
-            throttledRender();
-        },
-
-        initScene: function (collada) {
-
-            var box = new THREE.Box3;
-            box = box.setFromObject(collada);
-
-            // This generates the the capping cube
-            this.selection = new CAPS.Selection(
-               box.min,
-               box.max
-            );
-            // this.selection = new CAPS.Selection(
-            //     new THREE.Vector3(-7, -14, -14),
-            //     new THREE.Vector3(14, 9, 3)
-            // );
+            // scene with the capping surface, which is a box
             this.capsScene.add(this.selection.boxMesh);
+            // scene with the faces of the cube that are draggable
             this.scene.add(this.selection.touchMeshes);
+            // scene with the faces of the cube that are displayed (backfaces)
             this.scene.add(this.selection.displayMeshes);
 
-            // Apply materials
+            // helper function for applying materials
             var setMaterial = function (node, material) {
                 node.material = material;
                 if (node.children) {
@@ -176,36 +152,28 @@
                 }
             };
 
-            // Once the model is loaded, it makes 2 clones
-            // One for the back and front side
-            // When a model is clipped, the red that you see are the two clones being rendered
+            // two clones of the main model are generated, so there will always
+            // be three instances of the model rendered, but two are only
+            // rendered into the stencil which is applied on the capping cube
 
-            // This is the back sideclone (red)
+            // scene for the area added to the stencil
             var back = collada.clone();
             setMaterial(back, CAPS.MATERIAL.backStencil);
-            // back.scale.set(0.03, 0.03, 0.03);
             back.updateMatrix();
             this.backStencil.add(back);
 
-            // This is the front side clone (red)
+            // scene for the area substracted from the stencil
             var front = collada.clone();
             setMaterial(front, CAPS.MATERIAL.frontStencil);
-            // front.scale.set(0.03, 0.03, 0.03);
             front.updateMatrix();
             this.frontStencil.add(front);
 
-            // And this is the main mesh (blue) you see on parts that arent clipped
-            setMaterial(collada, CAPS.MATERIAL.sheet);
-            // collada.scale.set(0.03, 0.03, 0.03);
+            // scene for main model
+            setMaterial(collada, CAPS.MATERIAL.sheet( 0x9ecb3d ) );
             collada.updateMatrix();
             this.scene.add(collada);
-            
-            console.log("scene: ", this.scene);
-            console.log("capsScene: ", this.capsScene);
-            console.log("backStencil: ", this.backStencil);
-            console.log("frontStencil: ", this.frontStencil);
-            console.log("renderer: ", this.renderer);
 
+            this.selection.setUniforms();
             this.throttledRender();
 
         },
@@ -220,32 +188,31 @@
 
             var gl = this.renderer.context;
 
-            if (this.showCaps) {
+            this.renderer.state.setStencilTest(true);
 
-                this.renderer.state.setStencilTest(true);
+            // add the backsides to the stencil
+            this.renderer.state.setStencilFunc(gl.ALWAYS, 1, 0xff);
+            this.renderer.state.setStencilOp(gl.KEEP, gl.KEEP, gl.INCR);
+            this.renderer.render(this.backStencil, this.camera);
 
-                this.renderer.state.setStencilFunc(gl.ALWAYS, 1, 0xff);
-                this.renderer.state.setStencilOp(gl.KEEP, gl.KEEP, gl.INCR);
-                this.renderer.render(this.backStencil, this.camera);
+            // substract the frontsides from the stencil
+            this.renderer.state.setStencilFunc(gl.ALWAYS, 1, 0xff);
+            this.renderer.state.setStencilOp(gl.KEEP, gl.KEEP, gl.DECR);
+            this.renderer.render(this.frontStencil, this.camera);
 
-                this.renderer.state.setStencilFunc(gl.ALWAYS, 1, 0xff);
-                this.renderer.state.setStencilOp(gl.KEEP, gl.KEEP, gl.DECR);
-                this.renderer.render(this.frontStencil, this.camera);
+            // render the cap surface in the area of the stencil
+            this.renderer.state.setStencilFunc(gl.EQUAL, 1, 0xff);
+            this.renderer.state.setStencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
+            this.renderer.render(this.capsScene, this.camera);
 
-                this.renderer.state.setStencilFunc(gl.EQUAL, 1, 0xff);
-                this.renderer.state.setStencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
-                this.renderer.render(this.capsScene, this.camera);
+            this.renderer.state.setStencilTest(false);
 
-                this.renderer.state.setStencilTest(false);
-
-            }
-
+            // render the model inside the clipping bounds
             this.renderer.render(this.scene, this.camera);
 
         }
 
     };
-
 
 })();
 
