@@ -42,33 +42,37 @@
             }
 
             var houseModel = "./models/house.dae";
-
+            var fourcolors = "./models/fourcolors.dae";
             var bldg511Model = "../models/Building 5-11.dae";
 
             var nodeModel = "../models/Node 2B.obj";
-            
-            //Load the model
-             var loader = new THREE.ColladaLoader();
-             loader.options.convertUpAxis = true;
-             loader.load(houseModel, function (collada) {
+
+            // Load the model
+            var loader = new THREE.ColladaLoader();
+            loader.options.convertUpAxis = true;
+            loader.load(fourcolors, function (collada) {
                 self.setupScene(collada.scene);
             });
 
-            // var loader = new THREE.OBJLoader();
-            // loader.load(clinicModel, function (collada) {
-            //     self.setupScene(collada);
-            // });
+            /*
+            var loader = new THREE.OBJLoader();
+            loader.load(nodeModel, function (collada) {
+                self.setupScene(collada);
+            });
+            */
 
-            //var mtlLoader = new THREE.MTLLoader();
-            //mtlLoader.load("../models/Clinic_A_20110906_optimized.mtl", function (materials) {
-            //    var objLoader = new THREE.OBJLoader();
-            //    materials.preload();
-            //    objLoader.setMaterials(materials);
-            //    var loader = new THREE.OBJLoader();
-            //    loader.load("../models/Clinic_A_20110906_optimized.obj", function (collada) {
-            //        self.setupScene(collada);
-            //    });
-            //});
+            /*
+            var mtlLoader = new THREE.MTLLoader();
+            mtlLoader.load("../models/Clinic_A_20110906_optimized.mtl", function (materials) {
+                var objLoader = new THREE.OBJLoader();
+                materials.preload();
+                objLoader.setMaterials(materials);
+                var loader = new THREE.OBJLoader();
+                loader.load("../models/Clinic_A_20110906_optimized.obj", function (collada) {
+                    self.setupScene(collada);
+                });
+            });
+            */
 
         },
 
@@ -152,6 +156,17 @@
                 }
             };
 
+            var setMaterial2 = function( node ) {
+                if ( node.material && node.material.color ) {
+                    node.material = CAPS.MATERIAL.sheet( node.material.color );
+                }
+                if ( node.children ) {
+                    for (var i = 0; i < node.children.length; i++) {
+                        setMaterial2( node.children[i] );
+                    }
+                }
+            }
+
             // two clones of the main model are generated, so there will always
             // be three instances of the model rendered, but two are only
             // rendered into the stencil which is applied on the capping cube
@@ -169,7 +184,7 @@
             this.frontStencil.add(front);
 
             // scene for main model
-            setMaterial(collada, CAPS.MATERIAL.sheet( 0x9ecb3d ) );
+            setMaterial2( collada );
             collada.updateMatrix();
             this.scene.add(collada);
 

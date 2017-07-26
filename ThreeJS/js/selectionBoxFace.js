@@ -10,12 +10,16 @@
     selection.touchMeshes.add(frontFaceMesh);
     selection.selectables.push(frontFaceMesh);
 
+    /*
+    // this adds the backfaces of the capping cube which are rendered to give
+    // the impression of a highlighted area
     var backFaceGeometry = new CAPS.PlaneGeometry(v3, v2, v1, v0);
     backFaceGeometry.dynamic = true;
     selection.meshGeometries.push(backFaceGeometry);
 
     var backFaceMesh = new THREE.Mesh(backFaceGeometry, CAPS.MATERIAL.BoxBackFace);
     selection.displayMeshes.add(backFaceMesh);
+    */
 
     this.lines = new Array();
 
