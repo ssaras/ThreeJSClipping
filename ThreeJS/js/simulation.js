@@ -48,11 +48,11 @@
             var nodeModel = "../models/Node 2B.obj";
 
             // Load the model
-            var loader = new THREE.ColladaLoader();
-            loader.options.convertUpAxis = true;
-            loader.load(fourcolors, function (collada) {
-                self.setupScene(collada.scene);
-            });
+            //var loader = new THREE.ColladaLoader();
+            //loader.options.convertUpAxis = true;
+            //loader.load(fourcolors, function (collada) {
+            //    self.setupScene(collada.scene);
+            //});
 
             /*
             var loader = new THREE.OBJLoader();
@@ -61,18 +61,18 @@
             });
             */
 
-            /*
+            
             var mtlLoader = new THREE.MTLLoader();
-            mtlLoader.load("../models/Clinic_A_20110906_optimized.mtl", function (materials) {
+            mtlLoader.load(buildingModel.mtl, function (materials) {
                 var objLoader = new THREE.OBJLoader();
                 materials.preload();
                 objLoader.setMaterials(materials);
                 var loader = new THREE.OBJLoader();
-                loader.load("../models/Clinic_A_20110906_optimized.obj", function (collada) {
+                loader.load(buildingModel.obj, function (collada) {
                     self.setupScene(collada);
                 });
             });
-            */
+            
 
         },
 
@@ -157,12 +157,20 @@
             };
 
             var setMaterial2 = function( node ) {
-                if ( node.material && node.material.color ) {
+                if (node.material && node.material.materials && node.material.materials.length && node.material.materials.length > 1) {
+                    node.material = CAPS.MATERIAL.sheet(node.material.materials[0].color);
+                }
+                else if (node.material && node.material.color) {
                     node.material = CAPS.MATERIAL.sheet( node.material.color );
                 }
                 if ( node.children ) {
                     for (var i = 0; i < node.children.length; i++) {
-                        setMaterial2( node.children[i] );
+                        var child = node.children[i];
+                        if (child.name === "1odRvdSkr8mhVchQXFEwbx"
+                            || child.name === "1I_Rp6d3j27fE7zFUMgaqf") {
+                            console.log(child);
+                        }
+                        setMaterial2(child);
                     }
                 }
             }
