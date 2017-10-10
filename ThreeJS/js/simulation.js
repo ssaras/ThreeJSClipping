@@ -42,6 +42,7 @@
             }
 
             var houseModel = "./models/house.dae";
+            var houseJakob = "./models/house-jakob.dae";
             var fourcolors = "./models/fourcolors.dae";
             var bldg511Model = "../models/Building 5-11.dae";
 
@@ -50,7 +51,7 @@
             // Load the model
             var loader = new THREE.ColladaLoader();
             loader.options.convertUpAxis = true;
-            loader.load(fourcolors, function (collada) {
+            loader.load(houseJakob, function (collada) {
                 self.setupScene(collada.scene);
             });
 
@@ -158,7 +159,12 @@
 
             var setMaterial2 = function( node ) {
                 if ( node.material && node.material.color ) {
-                    node.material = CAPS.MATERIAL.sheet( node.material.color );
+                    if ( node.material.opacity < 1 ) {
+                        // TODO do something with transparent faces
+                        node.material = CAPS.MATERIAL.sheet( node.material.color );
+                    } else {
+                        node.material = CAPS.MATERIAL.sheet( node.material.color );
+                    }
                 }
                 if ( node.children ) {
                     for (var i = 0; i < node.children.length; i++) {
