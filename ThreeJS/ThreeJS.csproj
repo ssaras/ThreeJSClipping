@@ -127,6 +127,8 @@
     <Content Include="models\Modell VCL 1.ifc" />
     <Content Include="models\Node 2B.obj" />
     <Content Include="models\SampleHouse.ifc" />
+    <Content Include="models\fourcolors.dae" />
+    <Content Include="models\aws_90_base_profile.stl" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

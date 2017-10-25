@@ -19,6 +19,8 @@
         this.renderer = undefined;
         this.controls = undefined;
 
+        this.plane;
+
         this.loadModel();
 
     };
@@ -46,6 +48,26 @@
             var bldg511Model = "../models/Building 5-11.dae";
 
             var nodeModel = "../models/Node 2B.obj";
+            
+            var mullion = "../models/aws_90_base_profile.stl";
+            var block = "../models/block.stl";
+
+            var loader = new THREE.STLLoader();
+            var materialColor = new THREE.Color();
+            materialColor.setHex(0x905923);
+            loader.load(mullion, function (geometry) {
+
+                var material = new THREE.MeshPhongMaterial({
+                    color: materialColor,
+                    side: THREE.DoubleSide,
+                    clipShadows: true
+                });
+                var mesh = new THREE.Mesh(geometry, material);
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                
+                self.setupScene(mesh);
+            });
 
             // Load the model
             //var loader = new THREE.ColladaLoader();
@@ -54,14 +76,14 @@
             //    self.setupScene(collada.scene);
             //});
 
-            /*
-            var loader = new THREE.OBJLoader();
-            loader.load(nodeModel, function (collada) {
-                self.setupScene(collada);
-            });
-            */
-
             
+            //var loader = new THREE.OBJLoader();
+            //loader.load(nodeModel, function (collada) {
+            //    self.setupScene(collada);
+            //});
+            
+
+            /*
             var mtlLoader = new THREE.MTLLoader();
             mtlLoader.load(buildingModel.mtl, function (materials) {
                 var objLoader = new THREE.OBJLoader();
@@ -72,7 +94,7 @@
                     self.setupScene(collada);
                 });
             });
-            
+            */
 
         },
 
@@ -85,7 +107,7 @@
             document.body.appendChild(container);
 
             // Create camera and point it at center of scene
-            this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
+            this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 20000);
             this.camera.position.set(20, 20, 30);
             this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
@@ -195,6 +217,29 @@
             setMaterial2( collada );
             collada.updateMatrix();
             this.scene.add(collada);
+
+            // Have the controls orbit around the model instead of the center of the scene
+            var colladaBoxHelper = new THREE.BoxHelper(collada);
+
+            // Compute bounding sphere if not already computed
+            if (!colladaBoxHelper.geometry.boundingSphere) {
+                colladaBoxHelper.geometry.computeBoundingSphere();
+            }
+
+            // Get the center of the model
+            var colladaBoundingSphere = colladaBoxHelper.geometry.boundingSphere;
+            var colladaCentroid = colladaBoundingSphere.center.clone();
+            colladaCenter = colladaCentroid.clone();
+            this.modelCenter = colladaCenter;
+
+            // Make controls orbit around model center
+            this.controls.target.set(colladaCenter.x, colladaCenter.y, colladaCenter.z);
+
+            // Make camera look at model center
+            this.camera.lookAt(colladaCenter);
+
+            // Move plane to model center
+            this.plane.position.set(colladaCenter.x, colladaCenter.y, colladaCenter.z);
 
             this.selection.setUniforms();
             this.throttledRender();

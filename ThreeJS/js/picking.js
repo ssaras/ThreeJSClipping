@@ -13,7 +13,8 @@ CAPS.picking = function (simulation) {
 
    // this invisible plane is used to determine the amount of the dragging.
    // needs to be big enough. dragging stops when it moves beyond the planes dimensions.
-   var plane = new THREE.Mesh(new THREE.PlaneGeometry(300, 300, 4, 4), CAPS.MATERIAL.Invisible);
+   var plane = new THREE.Mesh(new THREE.PlaneGeometry(700, 700, 4, 4), CAPS.MATERIAL.Invisible);
+   simulation.plane = plane;
    simulation.scene.add(plane);
    var targeting = function (event) {
        mouse.setToNormalizedDeviceCoordinates(event, window);
